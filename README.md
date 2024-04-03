@@ -25,3 +25,7 @@ done
 ## Output
 
 The final vector tileset is written to `output/LSOA.pmtiles`.
+
+## Note
+
+Due to Cloudflare weirdness, items with a dash in them won't load.
