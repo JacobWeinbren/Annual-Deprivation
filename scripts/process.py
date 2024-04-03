@@ -33,23 +33,29 @@ for year_folder in [f for f in os.listdir(input_folder) if not f.startswith(".")
         csv_path = os.path.join(input_folder, year_folder, csv_file)
         print(f"Loading {data_type} data from {csv_path}")
 
-        # Read the CSV file and process each row
-        with open(csv_path) as f:
-            csv_reader = csv.reader(f)
-            headers = next(csv_reader)
+        try:
+            # Read the CSV file and process each row
+            with open(csv_path) as f:
+                csv_reader = csv.reader(f)
+                headers = next(csv_reader)
 
-            for row in csv_reader:
-                lsoa_code = row[headers.index("area_code")]
+                for row in csv_reader:
+                    lsoa_code = row[headers.index("area_code")]
 
-                if lsoa_code in lsoa_features:
-                    feature = lsoa_features[lsoa_code]
-                    for key, value in zip(headers, row):
-                        if key.endswith("_rate") and value:
-                            try:
-                                value = float(value)
-                                feature["properties"][f"{key}_{year}"] = round(value, 2)
-                            except ValueError:
-                                continue
+                    if lsoa_code in lsoa_features:
+                        feature = lsoa_features[lsoa_code]
+                        for key, value in zip(headers, row):
+                            if key.endswith("_rate") and value:
+                                try:
+                                    value = float(value)
+                                    feature["properties"][f"{key}_{year}"] = round(
+                                        value, 2
+                                    )
+                                except ValueError:
+                                    continue
+        except FileNotFoundError:
+            print(f"File not found: {csv_path}. Skipping...")
+            continue
 
 # Get the unique variable names
 variable_names = set()

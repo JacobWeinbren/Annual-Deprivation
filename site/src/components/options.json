@@ -1,0 +1,183 @@
+{
+	"variables": [
+		{
+			"label": "Claimaint Rate",
+			"options": [
+				{
+					"value": "claimant_rate",
+					"label": "Claimant Rate"
+				}
+			]
+		},
+		{
+			"label": "Crime",
+			"options": [
+				{
+					"value": "anti-social_behaviour_rate",
+					"label": "Anti-Social Behaviour Rate"
+				},
+				{
+					"value": "bicycle_theft_rate",
+					"label": "Bicycle Theft Rate"
+				},
+				{
+					"value": "burglary_rate",
+					"label": "Burglary Rate"
+				},
+				{
+					"value": "criminal_damage_and_arson_rate",
+					"label": "Criminal Damage and Arson Rate"
+				},
+				{
+					"value": "drugs_rate",
+					"label": "Drugs Rate"
+				},
+				{
+					"value": "other_crime_rate",
+					"label": "Other Crime Rate"
+				},
+				{
+					"value": "other_theft_rate",
+					"label": "Other Theft Rate"
+				},
+				{
+					"value": "possession_of_weapons_rate",
+					"label": "Possession of Weapons Rate"
+				},
+				{
+					"value": "public_order_rate",
+					"label": "Public Order Rate"
+				},
+				{
+					"value": "robbery_rate",
+					"label": "Robbery Rate"
+				},
+				{
+					"value": "shoplifting_rate",
+					"label": "Shoplifting Rate"
+				},
+				{
+					"value": "theft_from_the_person_rate",
+					"label": "Theft from the Person Rate"
+				},
+				{
+					"value": "vehicle_crime_rate",
+					"label": "Vehicle Crime Rate"
+				},
+				{
+					"value": "violence_and_sexual_offences_rate",
+					"label": "Violence and Sexual Offences Rate"
+				},
+				{
+					"value": "public_disorder_and_weapons_rate",
+					"label": "Public Disorder and Weapons Rate"
+				},
+				{
+					"value": "violent_crime_rate",
+					"label": "Violent Crime Rate"
+				}
+			]
+		},
+		{
+			"label": "Health",
+			"options": [
+				{
+					"value": "AF_prevalence_rate",
+					"label": "Atrial Fibrillation Prevalence Rate"
+				},
+				{
+					"value": "AST_prevalence_rate",
+					"label": "Asthma Prevalence Rate"
+				},
+				{
+					"value": "CAN_prevalence_rate",
+					"label": "Cancer Prevalence Rate"
+				},
+				{
+					"value": "CHD_prevalence_rate",
+					"label": "Secondary Prevention of Coronary Heart Disease Prevalence Rate"
+				},
+				{
+					"value": "CKD_prevalence_rate",
+					"label": "Chronic Kidney Disease Prevalence Rate"
+				},
+				{
+					"value": "COPD_prevalence_rate",
+					"label": "Chronic Obstructive Pulmonary Disease Prevalence Rate"
+				},
+				{
+					"value": "CVDPP_prevalence_rate",
+					"label": "Cardiovascular Disease Primary Prevention Prevalence Rate"
+				},
+				{
+					"value": "DEM_prevalence_rate",
+					"label": "Dementia Prevalence Rate"
+				},
+				{
+					"value": "DEP_prevalence_rate",
+					"label": "Depression Prevalence Rate"
+				},
+				{
+					"value": "DM_prevalence_rate",
+					"label": "Diabetes Mellitus Prevalence Rate"
+				},
+				{
+					"value": "EP_prevalence_rate",
+					"label": "Epilepsy Prevalence Rate"
+				},
+				{
+					"value": "HF_prevalence_rate",
+					"label": "Heart Failure Prevalence Rate"
+				},
+				{
+					"value": "HYP_prevalence_rate",
+					"label": "Hypertension Prevalence Rate"
+				},
+				{
+					"value": "LD_prevalence_rate",
+					"label": "Learning Disabilities Prevalence Rate"
+				},
+				{
+					"value": "MH_prevalence_rate",
+					"label": "Mental Health Prevalence Rate"
+				},
+				{
+					"value": "NDH_prevalence_rate",
+					"label": "Non-Diabetic Hyperglycaemia Prevalence Rate"
+				},
+				{
+					"value": "OB_prevalence_rate",
+					"label": "Obesity Prevalence Rate"
+				},
+				{
+					"value": "OST_prevalence_rate",
+					"label": "Osteoporosis: Secondary Prevention of Fragility Fractures Prevalence Rate"
+				},
+				{
+					"value": "PAD_prevalence_rate",
+					"label": "Peripheral Arterial Disease Prevalence Rate"
+				},
+				{
+					"value": "PC_prevalence_rate",
+					"label": "Palliative Care Prevalence Rate"
+				},
+				{
+					"value": "RA_prevalence_rate",
+					"label": "Rheumatoid Arthritis Prevalence Rate"
+				},
+				{
+					"value": "STIA_prevalence_rate",
+					"label": "Stroke and Transient Ischaemic Attack Prevalence Rate"
+				},
+				{
+					"value": "SMOK_prevalence_rate",
+					"label": "Smoking Prevalence Rate"
+				},
+				{
+					"value": "THY_prevalence_rate",
+					"label": "Thyroid Disorders Prevalence Rate"
+				}
+			]
+		}
+	]
+}

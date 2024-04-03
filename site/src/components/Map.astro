@@ -1,133 +1,59 @@
+---
+// Import options data from JSON file
+import options from "./options.json";
+
+// Define start and end years for the data
+const startYear = 2013;
+const endYear = 2022;
+
+// Generate an array of years from start to end
+const years = Array.from(
+	{ length: endYear - startYear + 1 },
+	(_, i) => startYear + i
+);
+---
+
+<!-- Map container -->
 <div id="map" class="w-screen h-screen"></div>
+
+<!-- Geocoder (search) container -->
 <div id="geocoder" class="geocoder fixed top-4 left-4 z-10"></div>
+
+<!-- Controls container -->
 <div
 	class="sm:w-[580px] text-sm w-full flex flex-col gap-3 absolute bottom-10 rounded-md z-10 bg-white p-4 left-1/2 transform -translate-x-1/2"
 >
+	<!-- Title -->
 	<div>
 		<p class="text-md font-semibold">Deprivation Measures</p>
 		<p>England</p>
 	</div>
 
+	<!-- Measure selector -->
 	<div class="flex flex-col gap-1">
 		<p class="text-md font-semibold">Measure</p>
 		<select id="variable" class="border p-2">
-			<optgroup label="Claimaint Rate">
-				<option value="claimant_rate">Claimant Rate</option>
-			</optgroup>
-			<optgroup label="Crime">
-				<option value="anti_social_behaviour_rate"
-					>Anti-Social Behaviour Rate</option
-				>
-				<option value="bicycle_theft_rate">Bicycle Theft Rate</option>
-				<option value="burglary_rate">Burglary Rate</option>
-				<option value="criminal_damage_and_arson_rate"
-					>Criminal Damage and Arson Rate</option
-				>
-				<option value="drugs_rate">Drugs Rate</option>
-				<option value="other_crime_rate">Other Crime Rate</option>
-				<option value="other_theft_rate">Other Theft Rate</option>
-				<option value="possession_of_weapons_rate"
-					>Possession of Weapons Rate</option
-				>
-				<option value="public_order_rate">Public Order Rate</option>
-				<option value="robbery_rate">Robbery Rate</option>
-				<option value="shoplifting_rate">Shoplifting Rate</option>
-				<option value="theft_from_the_person_rate"
-					>Theft from the Person Rate</option
-				>
-				<option value="vehicle_crime_rate">Vehicle Crime Rate</option>
-				<option value="violence_and_sexual_offences_rate"
-					>Violence and Sexual Offences Rate</option
-				>
-			</optgroup>
-			<optgroup label="Health">
-				<option value="AF_prevalence_rate"
-					>Atrial Fibrillation Prevalence Rate</option
-				>
-				<option value="AST_prevalence_rate"
-					>Asthma Prevalence Rate</option
-				>
-				<option value="CAN_prevalence_rate"
-					>Cancer Prevalence Rate</option
-				>
-				<option value="CHD_prevalence_rate"
-					>Secondary Prevention of Coronary Heart Disease Prevalence
-					Rate</option
-				>
-				<option value="CKD_prevalence_rate"
-					>Chronic Kidney Disease Prevalence Rate</option
-				>
-				<option value="COPD_prevalence_rate"
-					>Chronic Obstructive Pulmonary Disease Prevalence Rate</option
-				>
-				<option value="CVDPP_prevalence_rate"
-					>Cardiovascular Disease Primary Prevention Prevalence Rate</option
-				>
-				<option value="DEM_prevalence_rate"
-					>Dementia Prevalence Rate</option
-				>
-				<option value="DEP_prevalence_rate"
-					>Depression Prevalence Rate</option
-				>
-				<option value="DM_prevalence_rate"
-					>Diabetes Mellitus Prevalence Rate</option
-				>
-				<option value="EP_prevalence_rate"
-					>Epilepsy Prevalence Rate</option
-				>
-				<option value="HF_prevalence_rate"
-					>Heart Failure Prevalence Rate</option
-				>
-				<option value="HYP_prevalence_rate"
-					>Hypertension Prevalence Rate</option
-				>
-				<option value="LD_prevalence_rate"
-					>Learning Disabilities Prevalence Rate</option
-				>
-				<option value="MH_prevalence_rate"
-					>Mental Health Prevalence Rate</option
-				>
-				<option value="NDH_prevalence_rate"
-					>Non-Diabetic Hyperglycaemia Prevalence Rate</option
-				>
-				<option value="OB_prevalence_rate"
-					>Obesity Prevalence Rate</option
-				>
-				<option value="OST_prevalence_rate"
-					>Osteoporosis: Secondary Prevention of Fragility Fractures
-					Prevalence Rate</option
-				>
-				<option value="PAD_prevalence_rate"
-					>Peripheral Arterial Disease Prevalence Rate</option
-				>
-				<option value="PC_prevalence_rate"
-					>Palliative Care Prevalence Rate</option
-				>
-				<option value="RA_prevalence_rate"
-					>Rheumatoid Arthritis Prevalence Rate</option
-				>
-				<option value="STIA_prevalence_rate"
-					>Stroke and Transient Ischaemic Attack Prevalence Rate</option
-				>
-			</optgroup>
+			{
+				options.variables.map((variable) => (
+					<optgroup label={variable.label}>
+						{variable.options.map((option) => (
+							<option value={option.value}>{option.label}</option>
+						))}
+					</optgroup>
+				))
+			}
 		</select>
 	</div>
 
+	<!-- Year selector -->
 	<div class="flex flex-col gap-1">
 		<p class="text-md font-semibold">Year</p>
 		<select id="year" class="border p-2">
-			<option value="2013">2013</option>
-			<option value="2014">2014</option>
-			<option value="2015">2015</option>
-			<option value="2016">2016</option>
-			<option value="2017">2017</option>
-			<option value="2018">2018</option>
-			<option value="2019">2019</option>
-			<option value="2020">2020</option>
-			<option value="2021">2021</option>
+			{years.map((year) => <option value={year}>{year}</option>)}
 		</select>
 	</div>
 
+	<!-- Color scale gradient and labels -->
 	<div>
 		<div id="gradient" class="w-full h-4 rounded"></div>
 		<div class="flex justify-between">
@@ -135,74 +61,47 @@
 			<span id="max"></span>
 		</div>
 	</div>
-	<div id="meta">
-		The median person consumes goods and services worth
-		<span id="times" class="font-semibold"></span>
-		of CO₂, every year.
-	</div>
+
+	<!-- Hover instructions -->
 	<div id="hover">Hover over a point to see its value.</div>
 </div>
 
 <script>
 	import mapboxgl from "mapbox-gl";
 	import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+	import scales from "./scales.json";
 	import chroma from "chroma-js";
 
+	// Get Mapbox access token from environment variable
 	const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_TOKEN;
 
+	// Initialize the map
 	const map = new mapboxgl.Map({
 		container: "map",
 		center: [-1.2, 52.3],
 		zoom: 6,
 		minZoom: 4,
-		maxZoom: 17,
+		maxZoom: 16,
 		style: "mapbox://styles/mapbox/light-v11?optimize=true",
 		accessToken: MAPBOX_TOKEN,
 		antialias: true,
 		projection: { name: "mercator" },
 	});
 
-	const scales = {
-		claimant_rate: { min: 0, max: 0.884 },
-		anti_social_behaviour_rate: { min: 0, max: 0.152 },
-		bicycle_theft_rate: { min: 0, max: 0.009 },
-		burglary_rate: { min: 0, max: 0.025 },
-		criminal_damage_and_arson_rate: { min: 0, max: 0.031 },
-		drugs_rate: { min: 0, max: 0.02 },
-		other_crime_rate: { min: 0, max: 0.007 },
-		other_theft_rate: { min: 0, max: 0.078 },
-		possession_of_weapons_rate: { min: 0, max: 0.002 },
-		public_order_rate: { min: 0, max: 0.01 },
-		robbery_rate: { min: 0, max: 0.008 },
-		shoplifting_rate: { min: 0, max: 0.058 },
-		theft_from_the_person_rate: { min: 0, max: 0.022 },
-		vehicle_crime_rate: { min: 0, max: 0.022 },
-		violence_and_sexual_offences_rate: { min: 0, max: 0.035 },
-		AF_prevalence_rate: { min: 0, max: 0.028 },
-		AST_prevalence_rate: { min: 0, max: 0.078 },
-		CAN_prevalence_rate: { min: 0, max: 0.032 },
-		CHD_prevalence_rate: { min: 0, max: 0.054 },
-		CKD_prevalence_rate: { min: 0, max: 0.053 },
-		COPD_prevalence_rate: { min: 0, max: 0.032 },
-		CVDPP_prevalence_rate: { min: 0, max: 0.04 },
-		DEM_prevalence_rate: { min: 0, max: 0.011 },
-		DEP_prevalence_rate: { min: 0, max: 0.082 },
-		DM_prevalence_rate: { min: 0, max: 0.07 },
-		EP_prevalence_rate: { min: 0, max: 0.009 },
-		HF_prevalence_rate: { min: 0, max: 0.01 },
-		HYP_prevalence_rate: { min: 0, max: 0.191 },
-		LD_prevalence_rate: { min: 0, max: 0.007 },
-		MH_prevalence_rate: { min: 0, max: 0.014 },
-		NDH_prevalence_rate: { min: 0, max: 0.053 },
-		OB_prevalence_rate: { min: 0, max: 0.12 },
-		OST_prevalence_rate: { min: 0, max: 0.003 },
-		PAD_prevalence_rate: { min: 0, max: 0.012 },
-		PC_prevalence_rate: { min: 0, max: 0.007 },
-		RA_prevalence_rate: { min: 0, max: 0.009 },
-		STIA_prevalence_rate: { min: 0, max: 0.028 },
-	};
+	// Function to get available years for a given variable
+	function getAvailableYears(variable: string): string[] {
+		const features = map.queryRenderedFeatures({
+			layers: ["deprivation"],
+		});
+		const feature = features[features.length - 1];
+		const years = Object.keys(feature.properties)
+			.filter((key) => key.startsWith(variable + "_"))
+			.map((key) => key.split("_").pop());
+		return years;
+	}
 
-	function updateGradient(variable) {
+	// Function to update the color scale gradient and labels
+	function updateGradient(variable: string) {
 		const { min, max } = scales[variable];
 		const colorScale = chroma
 			.scale([
@@ -225,94 +124,108 @@
 		document.getElementById("max").textContent = `${max}`;
 	}
 
-	function updateMapLayer(variable, year) {
-		const colorScale = [
-			"interpolate",
-			["linear"],
-			["get", `${variable}_${year}`],
-			0,
-			"#f7f7f7",
-			0.2,
-			"#c7e9b4",
-			0.4,
-			"#7fcdbb",
-			0.6,
-			"#41b6c4",
-			0.8,
-			"#1d91c0",
-			1,
-			"#225ea8",
-		];
-
-		map.setPaintProperty("deprivation", "fill-color", colorScale);
-		map.setPaintProperty("deprivation", "fill-opacity", 1);
-	}
-
-	map.on("load", () => {
+	// Function to update the map layer with new variable and year
+	function updateMapLayer(variable: string, year: string) {
 		const firstLabelLayerId = map
 			.getStyle()
 			.layers.find((layer) => layer.type === "symbol").id;
 
+		const { min, max } = scales[variable];
+		const colors = chroma
+			.scale([
+				"#0571b0ff",
+				"#92c5deff",
+				"#f7f7f7ff",
+				"#f4a582ff",
+				"#ca0020ff",
+			])
+			.mode("lch")
+			.domain([min, max])
+			.colors(6);
+
+		const colorScale = [
+			"case",
+			["!=", ["get", `${variable}_${year}`], null],
+			[
+				"interpolate",
+				["linear"],
+				["get", `${variable}_${year}`],
+				min,
+				colors[0],
+				...colors
+					.slice(1, -1)
+					.flatMap((color, i) => [
+						min + ((i + 1) * (max - min)) / (colors.length - 1),
+						color,
+					]),
+				max,
+				colors[colors.length - 1],
+			],
+			"rgba(0, 0, 0, 0)",
+		];
+
+		// Remove the previous source and layer
+		if (map.getSource("deprivation")) {
+			map.removeLayer("deprivation");
+			map.removeSource("deprivation");
+		}
+
+		// Add the new source and layer for the selected variable
 		map.addSource("deprivation", {
 			type: "vector",
 			tiles: [
-				"https://map.jacobweinbren.workers.dev/LSOA/{z}/{x}/{y}.mvt",
+				`https://map.jacobweinbren.workers.dev/${variable}/{z}/{x}/{y}.mvt`,
 			],
 			minzoom: 0,
 			maxzoom: 17,
 		});
 
+		console.log(
+			`https://map.jacobweinbren.workers.dev/${variable}/{z}/{x}/{y}.mvt`
+		);
+
 		map.addLayer(
 			{
-				id: "deprivation-layer",
+				id: "deprivation",
 				type: "fill",
 				source: "deprivation",
-				"source-layer": "LSOA",
+				"source-layer": variable,
 				paint: {
-					"fill-color": [
-						"interpolate",
-						["linear"],
-						["get", "claimant_rate_2013"],
-						0,
-						"#f7f7f7",
-						0.2,
-						"#c7e9b4",
-						0.4,
-						"#7fcdbb",
-						0.6,
-						"#41b6c4",
-						0.8,
-						"#1d91c0",
-						1,
-						"#225ea8",
-					],
-					"fill-opacity": 0.8,
-				},
-				layout: {
-					visibility: "visible",
+					"fill-color": colorScale,
+					"fill-opacity": 1,
 				},
 			},
 			firstLabelLayerId
 		);
+	}
 
+	// Wait for map to load before adding layers and controls
+	map.on("load", () => {
+		// Add geocoder control
 		const geocoder = new MapboxGeocoder({
 			accessToken: MAPBOX_TOKEN,
 			mapboxgl: mapboxgl,
 		});
-
 		document.getElementById("geocoder").appendChild(geocoder.onAdd(map));
+
+		// Add navigation control
 		map.addControl(new mapboxgl.NavigationControl());
+
+		// Add attribution control
 		map.addControl(new mapboxgl.AttributionControl({ compact: true }));
 
-		map.on("mousemove", "deprivation", (e) => {
-			if (e.features && e.features.length > 0) {
-				const feature = e.features[0];
-				const claimantRate2013 = feature.properties.claimant_rate_2013;
-				console.log("Claimant Rate 2013:", claimantRate2013);
-			}
-		});
+		// Get initial variable and year, update gradient and map layer
+		const initialVariable = (
+			document.getElementById("variable") as HTMLSelectElement
+		).value;
+		const initialYear = (
+			document.getElementById("year") as HTMLSelectElement
+		).value;
+		updateGradient(initialVariable);
+		updateMapLayer(initialVariable, initialYear);
 	});
 
+	// Event listener for variable change
 	document.getElementById("variable").addEventListener("change", (event) => {
 		const variable = (event.target as HTMLSelectElement).value;
 		const year = (document.getElementById("year") as HTMLSelectElement)
@@ -321,10 +234,34 @@
 		updateMapLayer(variable, year);
 	});
 
+	// Event listener for year change
 	document.getElementById("year").addEventListener("change", (event) => {
-		const variable = (event.target as HTMLSelectElement).value;
-		const year = (document.getElementById("year") as HTMLSelectElement)
-			.value;
+		const variable = (
+			document.getElementById("variable") as HTMLSelectElement
+		).value;
+		const year = (event.target as HTMLSelectElement).value;
 		updateMapLayer(variable, year);
+	});
+
+	// Wait for the source to load before disabling unavailable years
+	map.on("idle", () => {
+		const variable = (
+			document.getElementById("variable") as HTMLSelectElement
+		).value;
+		if (map.getSource("deprivation") && map.isSourceLoaded("deprivation")) {
+			const availableYears = getAvailableYears(variable);
+			const yearSelect = document.getElementById(
+				"year"
+			) as HTMLSelectElement;
+			Array.from(yearSelect.options).forEach((optionElement) => {
+				optionElement.disabled = !availableYears.includes(
+					optionElement.value
+				);
+			});
+
+			if (!availableYears.includes(yearSelect.value)) {
+				yearSelect.value = availableYears[0];
+			}
+		}
 	});
 </script>
