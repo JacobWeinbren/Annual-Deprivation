@@ -1,48 +1,144 @@
----
-import chroma from "chroma-js";
-
-const domainStart = 7;
-const domainEnd = 11.8;
-const colorScale = chroma
-	.scale(["#0571b0ff", "#92c5deff", "#f7f7f7ff", "#f4a582ff", "#ca0020ff"])
-	.mode("lch")
-	.domain([domainStart, domainEnd]);
-
-const numberOfStops = 5;
-const stepSize = (domainEnd - domainStart) / (numberOfStops - 1);
-const stops = Array.from({ length: numberOfStops }, (_, i) =>
-	colorScale(domainStart + i * stepSize).hex()
-);
-const gradientStyle = `linear-gradient(to right, ${stops.join(", ")})`;
----
-
 <div id="map" class="w-screen h-screen"></div>
 <div id="geocoder" class="geocoder fixed top-4 left-4 z-10"></div>
-
 <div
-	class="sm:w-[500px] text-sm w-full flex flex-col gap-2 absolute bottom-10 rounded-md z-10 bg-white p-4 left-1/2 transform -translate-x-1/2"
+	class="sm:w-[580px] text-sm w-full flex flex-col gap-3 absolute bottom-10 rounded-md z-10 bg-white p-4 left-1/2 transform -translate-x-1/2"
 >
 	<div>
-		<p class="text-md font-semibold" id="title">
-			Consumption-Based CO₂ Emissions / Per Capita Per Annum
-		</p>
-		<p class="mb-2">United Kingdom</p>
+		<p class="text-md font-semibold">Deprivation Measures</p>
+		<p>England</p>
+	</div>
+
+	<div class="flex flex-col gap-1">
+		<p class="text-md font-semibold">Measure</p>
+		<select id="variable" class="border p-2">
+			<optgroup label="Claimaint Rate">
+				<option value="claimant_rate">Claimant Rate</option>
+			</optgroup>
+			<optgroup label="Crime">
+				<option value="anti_social_behaviour_rate"
+					>Anti-Social Behaviour Rate</option
+				>
+				<option value="bicycle_theft_rate">Bicycle Theft Rate</option>
+				<option value="burglary_rate">Burglary Rate</option>
+				<option value="criminal_damage_and_arson_rate"
+					>Criminal Damage and Arson Rate</option
+				>
+				<option value="drugs_rate">Drugs Rate</option>
+				<option value="other_crime_rate">Other Crime Rate</option>
+				<option value="other_theft_rate">Other Theft Rate</option>
+				<option value="possession_of_weapons_rate"
+					>Possession of Weapons Rate</option
+				>
+				<option value="public_order_rate">Public Order Rate</option>
+				<option value="robbery_rate">Robbery Rate</option>
+				<option value="shoplifting_rate">Shoplifting Rate</option>
+				<option value="theft_from_the_person_rate"
+					>Theft from the Person Rate</option
+				>
+				<option value="vehicle_crime_rate">Vehicle Crime Rate</option>
+				<option value="violence_and_sexual_offences_rate"
+					>Violence and Sexual Offences Rate</option
+				>
+			</optgroup>
+			<optgroup label="Health">
+				<option value="AF_prevalence_rate"
+					>Atrial Fibrillation Prevalence Rate</option
+				>
+				<option value="AST_prevalence_rate"
+					>Asthma Prevalence Rate</option
+				>
+				<option value="CAN_prevalence_rate"
+					>Cancer Prevalence Rate</option
+				>
+				<option value="CHD_prevalence_rate"
+					>Secondary Prevention of Coronary Heart Disease Prevalence
+					Rate</option
+				>
+				<option value="CKD_prevalence_rate"
+					>Chronic Kidney Disease Prevalence Rate</option
+				>
+				<option value="COPD_prevalence_rate"
+					>Chronic Obstructive Pulmonary Disease Prevalence Rate</option
+				>
+				<option value="CVDPP_prevalence_rate"
+					>Cardiovascular Disease Primary Prevention Prevalence Rate</option
+				>
+				<option value="DEM_prevalence_rate"
+					>Dementia Prevalence Rate</option
+				>
+				<option value="DEP_prevalence_rate"
+					>Depression Prevalence Rate</option
+				>
+				<option value="DM_prevalence_rate"
+					>Diabetes Mellitus Prevalence Rate</option
+				>
+				<option value="EP_prevalence_rate"
+					>Epilepsy Prevalence Rate</option
+				>
+				<option value="HF_prevalence_rate"
+					>Heart Failure Prevalence Rate</option
+				>
+				<option value="HYP_prevalence_rate"
+					>Hypertension Prevalence Rate</option
+				>
+				<option value="LD_prevalence_rate"
+					>Learning Disabilities Prevalence Rate</option
+				>
+				<option value="MH_prevalence_rate"
+					>Mental Health Prevalence Rate</option
+				>
+				<option value="NDH_prevalence_rate"
+					>Non-Diabetic Hyperglycaemia Prevalence Rate</option
+				>
+				<option value="OB_prevalence_rate"
+					>Obesity Prevalence Rate</option
+				>
+				<option value="OST_prevalence_rate"
+					>Osteoporosis: Secondary Prevention of Fragility Fractures
+					Prevalence Rate</option
+				>
+				<option value="PAD_prevalence_rate"
+					>Peripheral Arterial Disease Prevalence Rate</option
+				>
+				<option value="PC_prevalence_rate"
+					>Palliative Care Prevalence Rate</option
+				>
+				<option value="RA_prevalence_rate"
+					>Rheumatoid Arthritis Prevalence Rate</option
+				>
+				<option value="STIA_prevalence_rate"
+					>Stroke and Transient Ischaemic Attack Prevalence Rate</option
+				>
+			</optgroup>
+		</select>
+	</div>
+
+	<div class="flex flex-col gap-1">
+		<p class="text-md font-semibold">Year</p>
+		<select id="year" class="border p-2">
+			<option value="2013">2013</option>
+			<option value="2014">2014</option>
+			<option value="2015">2015</option>
+			<option value="2016">2016</option>
+			<option value="2017">2017</option>
+			<option value="2018">2018</option>
+			<option value="2019">2019</option>
+			<option value="2020">2020</option>
+			<option value="2021">2021</option>
+		</select>
 	</div>
 
 	<div>
-		<div class="w-full h-4 rounded" style={`background: ${gradientStyle};`}>
-		</div>
+		<div id="gradient" class="w-full h-4 rounded"></div>
 		<div class="flex justify-between">
-			<span id="min">7 tons</span>
-			<span id="max">11.8 tons</span>
+			<span id="min"></span>
+			<span id="max"></span>
 		</div>
 	</div>
-
 	<div id="meta">
-		The median person consumes goods and services worth <span
-			id="times"
-			class="font-semibold">9.4 tons</span
-		> of CO₂, every year.
+		The median person consumes goods and services worth
+		<span id="times" class="font-semibold"></span>
+		of CO₂, every year.
 	</div>
 	<div id="hover">Hover over a point to see its value.</div>
 </div>
@@ -50,13 +146,15 @@ const gradientStyle = `linear-gradient(to right, ${stops.join(", ")})`;
 <script>
 	import mapboxgl from "mapbox-gl";
 	import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+	import chroma from "chroma-js";
+
 	const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_TOKEN;
 
 	const map = new mapboxgl.Map({
 		container: "map",
-		center: [-4.2, 55.8],
-		zoom: 9,
-		minZoom: 5.5,
+		center: [-1.2, 52.3],
+		zoom: 6,
+		minZoom: 4,
 		maxZoom: 17,
 		style: "mapbox://styles/mapbox/light-v11?optimize=true",
 		accessToken: MAPBOX_TOKEN,
@@ -64,15 +162,101 @@ const gradientStyle = `linear-gradient(to right, ${stops.join(", ")})`;
 		projection: { name: "mercator" },
 	});
 
+	const scales = {
+		claimant_rate: { min: 0, max: 0.884 },
+		anti_social_behaviour_rate: { min: 0, max: 0.152 },
+		bicycle_theft_rate: { min: 0, max: 0.009 },
+		burglary_rate: { min: 0, max: 0.025 },
+		criminal_damage_and_arson_rate: { min: 0, max: 0.031 },
+		drugs_rate: { min: 0, max: 0.02 },
+		other_crime_rate: { min: 0, max: 0.007 },
+		other_theft_rate: { min: 0, max: 0.078 },
+		possession_of_weapons_rate: { min: 0, max: 0.002 },
+		public_order_rate: { min: 0, max: 0.01 },
+		robbery_rate: { min: 0, max: 0.008 },
+		shoplifting_rate: { min: 0, max: 0.058 },
+		theft_from_the_person_rate: { min: 0, max: 0.022 },
+		vehicle_crime_rate: { min: 0, max: 0.022 },
+		violence_and_sexual_offences_rate: { min: 0, max: 0.035 },
+		AF_prevalence_rate: { min: 0, max: 0.028 },
+		AST_prevalence_rate: { min: 0, max: 0.078 },
+		CAN_prevalence_rate: { min: 0, max: 0.032 },
+		CHD_prevalence_rate: { min: 0, max: 0.054 },
+		CKD_prevalence_rate: { min: 0, max: 0.053 },
+		COPD_prevalence_rate: { min: 0, max: 0.032 },
+		CVDPP_prevalence_rate: { min: 0, max: 0.04 },
+		DEM_prevalence_rate: { min: 0, max: 0.011 },
+		DEP_prevalence_rate: { min: 0, max: 0.082 },
+		DM_prevalence_rate: { min: 0, max: 0.07 },
+		EP_prevalence_rate: { min: 0, max: 0.009 },
+		HF_prevalence_rate: { min: 0, max: 0.01 },
+		HYP_prevalence_rate: { min: 0, max: 0.191 },
+		LD_prevalence_rate: { min: 0, max: 0.007 },
+		MH_prevalence_rate: { min: 0, max: 0.014 },
+		NDH_prevalence_rate: { min: 0, max: 0.053 },
+		OB_prevalence_rate: { min: 0, max: 0.12 },
+		OST_prevalence_rate: { min: 0, max: 0.003 },
+		PAD_prevalence_rate: { min: 0, max: 0.012 },
+		PC_prevalence_rate: { min: 0, max: 0.007 },
+		RA_prevalence_rate: { min: 0, max: 0.009 },
+		STIA_prevalence_rate: { min: 0, max: 0.028 },
+	};
+
+	function updateGradient(variable) {
+		const { min, max } = scales[variable];
+		const colorScale = chroma
+			.scale([
+				"#0571b0ff",
+				"#92c5deff",
+				"#f7f7f7ff",
+				"#f4a582ff",
+				"#ca0020ff",
+			])
+			.mode("lch")
+			.domain([min, max]);
+		const numberOfStops = 5;
+		const stepSize = (max - min) / (numberOfStops - 1);
+		const stops = Array.from({ length: numberOfStops }, (_, i) =>
+			colorScale(min + i * stepSize).hex()
+		);
+		const gradientStyle = `linear-gradient(to right, ${stops.join(", ")})`;
+		document.getElementById("gradient").style.background = gradientStyle;
+		document.getElementById("min").textContent = `${min}`;
+		document.getElementById("max").textContent = `${max}`;
+	}
+
+	function updateMapLayer(variable, year) {
+		const colorScale = [
+			"interpolate",
+			["linear"],
+			["get", `${variable}_${year}`],
+			0,
+			"#f7f7f7",
+			0.2,
+			"#c7e9b4",
+			0.4,
+			"#7fcdbb",
+			0.6,
+			"#41b6c4",
+			0.8,
+			"#1d91c0",
+			1,
+			"#225ea8",
+		];
+
+		map.setPaintProperty("deprivation", "fill-color", colorScale);
+		map.setPaintProperty("deprivation", "fill-opacity", 1);
+	}
+
 	map.on("load", () => {
 		const firstLabelLayerId = map
 			.getStyle()
 			.layers.find((layer) => layer.type === "symbol").id;
 
-		map.addSource("emissions", {
+		map.addSource("deprivation", {
 			type: "vector",
 			tiles: [
-				"https://map.jacobweinbren.workers.dev/emissions/{z}/{x}/{y}.mvt",
+				"https://map.jacobweinbren.workers.dev/LSOA/{z}/{x}/{y}.mvt",
 			],
 			minzoom: 0,
 			maxzoom: 17,
@@ -80,25 +264,27 @@ const gradientStyle = `linear-gradient(to right, ${stops.join(", ")})`;
 
 		map.addLayer(
 			{
-				id: "emissions-layer",
+				id: "deprivation-layer",
 				type: "fill",
-				source: "emissions",
-				"source-layer": "updated_map",
+				source: "deprivation",
+				"source-layer": "LSOA",
 				paint: {
 					"fill-color": [
 						"interpolate",
 						["linear"],
-						["get", "total"],
-						7,
-						"#0571b0",
-						8.45,
-						"#92c5de",
-						9.9,
+						["get", "claimant_rate_2013"],
+						0,
 						"#f7f7f7",
-						10.9,
-						"#f4a582",
-						11.8,
-						"#ca0020",
+						0.2,
+						"#c7e9b4",
+						0.4,
+						"#7fcdbb",
+						0.6,
+						"#41b6c4",
+						0.8,
+						"#1d91c0",
+						1,
+						"#225ea8",
 					],
 					"fill-opacity": 0.8,
 				},
@@ -113,14 +299,32 @@ const gradientStyle = `linear-gradient(to right, ${stops.join(", ")})`;
 			accessToken: MAPBOX_TOKEN,
 			mapboxgl: mapboxgl,
 		});
+
 		document.getElementById("geocoder").appendChild(geocoder.onAdd(map));
-
 		map.addControl(new mapboxgl.NavigationControl());
+		map.addControl(new mapboxgl.AttributionControl({ compact: true }));
 
-		map.addControl(
-			new mapboxgl.AttributionControl({
-				compact: true,
-			})
-		);
+		map.on("mousemove", "deprivation", (e) => {
+			if (e.features && e.features.length > 0) {
+				const feature = e.features[0];
+				const claimantRate2013 = feature.properties.claimant_rate_2013;
+				console.log("Claimant Rate 2013:", claimantRate2013);
+			}
+		});
+	});
+
+	document.getElementById("variable").addEventListener("change", (event) => {
+		const variable = (event.target as HTMLSelectElement).value;
+		const year = (document.getElementById("year") as HTMLSelectElement)
+			.value;
+		updateGradient(variable);
+		updateMapLayer(variable, year);
+	});
+
+	document.getElementById("year").addEventListener("change", (event) => {
+		const variable = (event.target as HTMLSelectElement).value;
+		const year = (document.getElementById("year") as HTMLSelectElement)
+			.value;
+		updateMapLayer(variable, year);
 	});
 </script>

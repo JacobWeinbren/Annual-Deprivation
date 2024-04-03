@@ -14,7 +14,12 @@ This project generates vector tiles for the UK Deprivation Annual Index at the L
 3. Generate vector tiles from the combined GeoJSON using tippecanoe:
 
 ```bash
-tippecanoe --output=output/LSOA.pmtiles --generate-ids --force --no-feature-limit --no-tile-size-limit --detect-shared-borders --coalesce-fraction-as-needed --coalesce-densest-as-needed --coalesce-smallest-as-needed --coalesce --reorder --minimum-zoom=0 --maximum-zoom=17 -x FID -x LSOA11CD -x LSOA11NM -x LSOA11NMW -x BNG_E -x BNG_N -x LONG -x LAT -r1 output/LSOA.geojson
+counter=0
+for file in output/*.geojson; do
+    tippecanoe --output="${file%.geojson}.pmtiles" --generate-ids --force --no-feature-limit --no-tile-size-limit --detect-shared-borders --coalesce-fraction-as-needed --coalesce-densest-as-needed --coalesce-smallest-as-needed --coalesce --reorder --minimum-zoom=0 --maximum-zoom=16 "$file"
+    echo "Processed file $counter"
+    counter=$((counter+1))
+done
 ```
 
 ## Output

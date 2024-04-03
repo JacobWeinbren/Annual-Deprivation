@@ -1,6 +1,7 @@
 import os
-import json
+import ujson
 import csv
+from collections import defaultdict
 
 # Set the paths to the input and output folders
 input_folder = "data/ADI_all-domains"
@@ -9,20 +10,15 @@ output_folder = "output"
 # Load the LSOA GeoJSON file
 print("Loading LSOA GeoJSON file...")
 with open("data/LSOA_WGS84.geojson") as f:
-    lsoa_geojson = json.load(f)
+    lsoa_geojson = ujson.load(f)
 
 # Create a dictionary to store the LSOA features by their code
 lsoa_features = {
     feature["properties"]["LSOA11CD"]: feature for feature in lsoa_geojson["features"]
 }
 
-# Create a set to keep track of the LSOAs with matching data
-matched_lsoas = set()
-
 # Iterate over each year folder in ADI_all-domains
-for year_folder in os.listdir(input_folder):
-    if year_folder.startswith("."):
-        continue
+for year_folder in [f for f in os.listdir(input_folder) if not f.startswith(".")]:
     year = year_folder.split("_")[-1]
     print(f"Processing data for year {year}...")
 
@@ -37,29 +33,51 @@ for year_folder in os.listdir(input_folder):
         csv_path = os.path.join(input_folder, year_folder, csv_file)
         print(f"Loading {data_type} data from {csv_path}")
 
+        # Read the CSV file and process each row
         with open(csv_path) as f:
-            csv_data = csv.DictReader(f)
-            for row in csv_data:
-                lsoa_code = row["area_code"]
+            csv_reader = csv.reader(f)
+            headers = next(csv_reader)
+
+            for row in csv_reader:
+                lsoa_code = row[headers.index("area_code")]
+
                 if lsoa_code in lsoa_features:
-                    matched_lsoas.add(lsoa_code)
-                    for key, value in row.items():
-                        if key != "area_code" and key != "area_name":
-                            if value:
-                                try:
-                                    value = float(value)
-                                    value = f"{value:.2f}"
-                                except ValueError:
-                                    pass
-                                lsoa_features[lsoa_code]["properties"][
-                                    f"{key}_{year}"
-                                ] = value
+                    feature = lsoa_features[lsoa_code]
+                    for key, value in zip(headers, row):
+                        if key.endswith("_rate") and value:
+                            try:
+                                value = float(value)
+                                feature["properties"][f"{key}_{year}"] = round(value, 2)
+                            except ValueError:
+                                continue
 
-# Remove the LSOA features that don't have matching data
-lsoa_geojson["features"] = [lsoa_features[lsoa_code] for lsoa_code in matched_lsoas]
+# Get the unique variable names
+variable_names = set()
+for feature in lsoa_features.values():
+    for key in feature["properties"]:
+        if "_" in key:
+            variable_name, _ = key.rsplit("_", 1)
+            variable_names.add(variable_name)
 
-# Save the updated LSOA GeoJSON to the output folder
-output_file = os.path.join(output_folder, "LSOA.geojson")
-print(f"Saving updated LSOA GeoJSON to {output_file}")
-with open(output_file, "w") as f:
-    json.dump(lsoa_geojson, f, indent=2)
+# Create and write the GeoJSON files for each variable
+for variable_name in variable_names:
+    output_geojson = {"type": "FeatureCollection", "features": []}
+
+    for lsoa_code, feature in lsoa_features.items():
+        output_feature = {
+            "type": "Feature",
+            "geometry": feature["geometry"],
+            "properties": {"LSOA11CD": lsoa_code},
+        }
+
+        for key, value in feature["properties"].items():
+            if key.startswith(variable_name):
+                output_feature["properties"][key] = value
+
+        output_geojson["features"].append(output_feature)
+
+    output_file = os.path.join(output_folder, f"{variable_name}.geojson")
+    with open(output_file, "w") as f:
+        ujson.dump(output_geojson, f, indent=2)
+
+print("Processing complete.")
